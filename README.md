@@ -1,9 +1,10 @@
 
 ## TO COMPLETE THIS ASSESSMENT
 1. Clone this repo
-2. Complete the tasks listed at the bottom
-3. Upload the completed project to github
-4. Paste a link to repo inside the google form under #1 JavaScript GraphQL Assessment: https://docs.google.com/forms/d/1_mNoOIj2KXoMuCoz84tbaMjKufu6UUfH4fp_TKQ8aWo
+2. Start app in docker container ("docker compose up" in root directory) and access on your local network
+3. Complete the tasks listed at the bottom
+4. Upload the completed project to github
+5. Paste a link to repo inside the google form under #1 JavaScript GraphQL Assessment: https://docs.google.com/forms/d/1_mNoOIj2KXoMuCoz84tbaMjKufu6UUfH4fp_TKQ8aWo
 
 
 ## REQUIREMENTS FOR COMPLETION
