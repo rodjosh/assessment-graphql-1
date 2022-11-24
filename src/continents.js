@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+
 import { useFavorites } from "./hooks/useFavorites";
 
 const CONTINENTS = gql`

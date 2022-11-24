@@ -162,7 +162,8 @@ const Countries = () => {
 
               <a href="#" onClick={() => openModal(country.code)}>
                 {country.emoji} {country.name}{" "}
-                {country.states.length > 0 && country.states.length}{" "}
+                {country.states.length > 0 && country.states.length}
+                {" - "}
                 {country.states.length > 1 && "States"}
                 {country.states.length === 1 && "State"}
               </a>
