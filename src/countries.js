@@ -1,17 +1,6 @@
-import { useState } from 'react'
-import {
-  Typography,
-  Container,
-  List,
-  Box,
-  MenuItem,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Dialog
-} from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { gql, useQuery, useLazyQuery } from '@apollo/client'
+import { Typography, Container, Box, Modal } from "@mui/material";
+import { gql, useQuery } from "@apollo/client";
+import { useState } from "react";
 
 const COUNTRIES = gql`
   query Countries {
@@ -33,10 +22,10 @@ const COUNTRIES = gql`
       }
     }
   }
-`
+`;
 
 const COUNTRY = gql`
-  query Country($code: String!) {
+  query Country($code: ID!) {
     country(code: $code) {
       code
       name
@@ -55,50 +44,104 @@ const COUNTRY = gql`
       }
     }
   }
-`
+`;
+
+const Country = ({ code }) => {
+  const { loading, error, data, refetch } = useQuery(COUNTRY, {
+    variables: { code },
+  });
+
+  const country = data?.country;
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 200,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  return (
+    <Box sx={style}>
+      {loading && !error && "loading..."}
+      {!loading && error && "loading..."}
+
+      {!loading && !error && (
+        <>
+          <Typography sx={{ mt: 2 }}>Name: {country?.name}</Typography>
+          <Typography sx={{ mt: 2 }}>Code: {country?.code}</Typography>
+          <Typography sx={{ mt: 2 }}>Currency: {country?.currency}</Typography>
+          <Typography sx={{ mt: 2 }}>Emoji: {country?.emoji}</Typography>
+          <Typography sx={{ mt: 2 }}>Phone: {country?.phone}</Typography>
+          <Typography sx={{ mt: 2 }}>
+            States: {country?.states?.length}
+          </Typography>
+        </>
+      )}
+    </Box>
+  );
+};
 
 const Countries = () => {
-  const { loading, error, data, refetch } = useQuery(COUNTRIES)
-  if (loading) return <>loading...</>
-  if (error) return <>error...</>
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState();
+  const { loading, error, data, refetch } = useQuery(COUNTRIES);
 
-  const countries = data.countries
+  if (loading) return <>loading...</>;
+  if (error) return <>error...</>;
+
+  const countries = data.countries;
   const countriesWithStates = countries.filter(
-    country => country.states.length > 0
-  )
+    (country) => country.states.length > 0
+  );
+
+  const toggleCountry = () => setCountryOpen(!countryOpen);
+
+  const openModal = (code) => {
+    setSelectedCountry(code);
+    toggleCountry();
+  };
 
   return (
     <Container>
-      <Typography variant='h1' sx={{ textAlign: 'center' }}>
+      <Typography variant="h1" sx={{ textAlign: "center" }}>
         Countries
       </Typography>
       <Box>
-        <Box sx={{ textAlign: 'center', padding: '.5rem' }}>
+        <Box sx={{ textAlign: "center", padding: ".5rem" }}>
           {countries.length} Countries
         </Box>
-        <Box sx={{ textAlign: 'center', padding: '.5rem' }}>
+        <Box sx={{ textAlign: "center", padding: ".5rem" }}>
           {countriesWithStates.length} Countries with states
         </Box>
-        {countries.map(country => (
+        {countries.map((country) => (
           <Box
+            onClick={() => openModal(country.code)}
             key={country.code}
             sx={{
-              padding: '.5rem 0rem',
-              color: country.states.length > 0 ? 'blue' : '#999'
+              padding: ".5rem 0rem",
+              color: country.states.length > 0 ? "blue" : "#999",
             }}
           >
-            <a href='#'>
-              {country.emoji} {country.name}{' '}
-              {country.states.length > 0 && country.states.length}{' '}
-              {country.states.length > 1 && 'States'}
-              {country.states.length === 1 && 'State'}
+            <a href="#">
+              {country.emoji} {country.name}{" "}
+              {country.states.length > 0 && country.states.length}{" "}
+              {country.states.length > 1 && "States"}
+              {country.states.length === 1 && "State"}
             </a>
           </Box>
         ))}
       </Box>
 
+      <Modal open={countryOpen} onClose={toggleCountry}>
+        <Country code={selectedCountry} />
+      </Modal>
     </Container>
-  )
-}
+  );
+};
 
-export default Countries
+export default Countries;

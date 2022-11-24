@@ -1,13 +1,13 @@
-import { Container, Typography } from '@mui/material'
+import { Container, Typography } from "@mui/material";
 
 const Home = () => {
   return (
     <Container>
-      <Typography variant='h1' sx={{ textAlign: 'center' }}>
+      <Typography variant="h1" sx={{ textAlign: "center" }}>
         Home page
       </Typography>
     </Container>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
