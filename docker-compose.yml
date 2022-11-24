@@ -1,7 +1,6 @@
-version: '3.7'
+version: "3.7"
 
 services:
-
   sample:
     container_name: sample
     tty: true
