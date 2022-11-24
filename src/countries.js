@@ -134,11 +134,11 @@ const Countries = () => {
         </Box>
 
         {countries.map((country) => {
-          const isFavorite = favoriteCountries?.includes(country?.code);
+          const isFavorite = favoriteCountries?.includes(country?.name);
 
           const onClick = () => {
-            if (isFavorite) return removeFavoriteCountry(country?.code);
-            addFavoriteCountry(country?.code);
+            if (isFavorite) return removeFavoriteCountry(country?.name);
+            addFavoriteCountry(country?.name);
           };
 
           return (

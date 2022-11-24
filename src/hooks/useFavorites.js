@@ -1,23 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useState({
-    countries: [],
-    languages: [],
-    continents: [],
-  });
+  const initialState = JSON.parse(localStorage.getItem("favorites"));
+  const [favorites, setFavorites] = useState(
+    initialState ?? {
+      countries: [],
+      languages: [],
+      continents: [],
+    }
+  );
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   const setFavoritesCountries = (countries) => {
     setFavorites((prev) => ({ ...prev, countries }));
   };
 
-  const addFavoriteCountry = (code) => {
-    setFavoritesCountries([...favorites?.countries, code]);
+  const addFavoriteCountry = (name) => {
+    setFavoritesCountries([...favorites?.countries, name]);
   };
 
-  const removeFavoriteCountry = (code) => {
+  const removeFavoriteCountry = (name) => {
     setFavoritesCountries(
-      favorites?.countries.filter((countryCode) => countryCode !== code)
+      favorites?.countries.filter((countryName) => countryName !== name)
     );
   };
 
@@ -25,15 +32,37 @@ export const useFavorites = () => {
     setFavorites((prev) => ({ ...prev, languages }));
   };
 
+  const addFavoriteLanguage = (name) => {
+    setFavoritesLanguages([...favorites?.languages, name]);
+  };
+
+  const removeFavoriteLanguage = (name) => {
+    setFavoritesLanguages(
+      favorites?.languages.filter((language) => language !== name)
+    );
+  };
+
   const setFavoritesContinents = (continents) => {
     setFavorites((prev) => ({ ...prev, continents }));
+  };
+
+  const addFavoriteContinent = (name) => {
+    setFavoritesContinents([...favorites?.continents, name]);
+  };
+
+  const removeFavoriteContinent = (name) => {
+    setFavoritesContinents(
+      favorites?.continents.filter((continentName) => continentName !== name)
+    );
   };
 
   return {
     favorites,
     addFavoriteCountry,
     removeFavoriteCountry,
-    setFavoritesLanguages,
-    setFavoritesContinents,
+    addFavoriteLanguage,
+    removeFavoriteLanguage,
+    addFavoriteContinent,
+    removeFavoriteContinent,
   };
 };
