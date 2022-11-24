@@ -2,6 +2,11 @@ import { Typography, Container, Box, Modal } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
 
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+
+import { useFavorites } from "./hooks/useFavorites";
+
 const COUNTRIES = gql`
   query Countries {
     countries {
@@ -87,6 +92,9 @@ const Country = ({ code }) => {
 };
 
 const Countries = () => {
+  const { favorites, addFavoriteCountry, removeFavoriteCountry } =
+    useFavorites();
+
   const [countryOpen, setCountryOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState();
   const { loading, error, data, refetch } = useQuery(COUNTRIES);
@@ -95,6 +103,7 @@ const Countries = () => {
   if (error) return <>error...</>;
 
   const countries = data.countries;
+  const favoriteCountries = favorites?.countries ?? [];
   const countriesWithStates = countries.filter(
     (country) => country.states.length > 0
   );
@@ -115,26 +124,51 @@ const Countries = () => {
         <Box sx={{ textAlign: "center", padding: ".5rem" }}>
           {countries.length} Countries
         </Box>
+
         <Box sx={{ textAlign: "center", padding: ".5rem" }}>
           {countriesWithStates.length} Countries with states
         </Box>
-        {countries.map((country) => (
-          <Box
-            onClick={() => openModal(country.code)}
-            key={country.code}
-            sx={{
-              padding: ".5rem 0rem",
-              color: country.states.length > 0 ? "blue" : "#999",
-            }}
-          >
-            <a href="#">
-              {country.emoji} {country.name}{" "}
-              {country.states.length > 0 && country.states.length}{" "}
-              {country.states.length > 1 && "States"}
-              {country.states.length === 1 && "State"}
-            </a>
-          </Box>
-        ))}
+
+        <Box sx={{ textAlign: "center", padding: ".5rem" }}>
+          {favoriteCountries.length} Favorite Countries
+        </Box>
+
+        {countries.map((country) => {
+          const isFavorite = favoriteCountries?.includes(country?.code);
+
+          const onClick = () => {
+            if (isFavorite) return removeFavoriteCountry(country?.code);
+            addFavoriteCountry(country?.code);
+          };
+
+          return (
+            <Box
+              key={country.code}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                padding: ".5rem 0rem",
+                color: country.states.length > 0 ? "blue" : "#999",
+              }}
+            >
+              <Box
+                component="span"
+                onClick={onClick}
+                sx={{ color: "orange", marginRight: "20px" }}
+              >
+                {isFavorite && <StarIcon />}
+                {!isFavorite && <StarBorderIcon />}
+              </Box>
+
+              <a href="#" onClick={() => openModal(country.code)}>
+                {country.emoji} {country.name}{" "}
+                {country.states.length > 0 && country.states.length}{" "}
+                {country.states.length > 1 && "States"}
+                {country.states.length === 1 && "State"}
+              </a>
+            </Box>
+          );
+        })}
       </Box>
 
       <Modal open={countryOpen} onClose={toggleCountry}>
